@@ -104,7 +104,7 @@ public class ChatServer implements Runnable {
                 try {
                     Message message = (Message) ois.readObject();
                     if (message != null) {
-                        messageBuffer.put(message);
+                        messageManager.put(message);
                     } else {
                         System.out.println("NULL");
                     }

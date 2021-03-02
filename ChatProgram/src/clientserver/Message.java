@@ -19,4 +19,8 @@ public class Message implements Serializable {
     public Icon getIcon() {
         return icon;
     }
+
+    public String toString() {
+        return String.format("%s", text);
+    }
 }

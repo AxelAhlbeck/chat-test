@@ -1,23 +1,20 @@
 package gui;
 
+import clientserver.Callback;
 import clientserver.ChatClient;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GUI extends JFrame {
-    private ChatClient client;
-    private int width, height;
+public class GUI extends JFrame implements Callback {
     TextBoxPanel textBoxPanel;
     ChatPanel chatPanel;
 
     public GUI(ChatClient client, int width, int height) {
-        this.client = client;
-        this.width = width;
 
         setPreferredSize(new Dimension(width, height));
 
-        textBoxPanel = new TextBoxPanel(width, height/5);
+        textBoxPanel = new TextBoxPanel(client, width, height/5);
         add(textBoxPanel, BorderLayout.SOUTH);
 
         chatPanel = new ChatPanel(width, 4 * height/5);
@@ -26,6 +23,11 @@ public class GUI extends JFrame {
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        client.addMessageListener(this);
+    }
+
+    public GUI(ChatClient client) {
+        this(client, 500, 500);
     }
 
     public GUI() {
@@ -36,4 +38,8 @@ public class GUI extends JFrame {
         new GUI();
     }
 
+    @Override
+    public void updateListView(String[] infoStrings) {
+        chatPanel.updateListView(infoStrings);
+    }
 }

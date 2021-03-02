@@ -17,6 +17,10 @@ public class MessageManager extends Thread {
         changes.addPropertyChangeListener(listener);
     }
 
+    public void put(Message message) {
+        messageBuffer.put(message);
+    }
+
     public void run(){
         while(!Thread.interrupted()) {
             try {

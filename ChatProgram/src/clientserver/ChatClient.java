@@ -7,21 +7,30 @@ import java.util.Scanner;
 
 public class ChatClient {
     private ArrayList<Message> history;
+    private Buffer<Message> messageBuffer;
+    private ArrayList<Callback> callbacks;
 
     public ChatClient(String ip, int port) {
         history = new ArrayList<>();
+        messageBuffer = new Buffer<>();
+        callbacks = new ArrayList<>();
         new Connection(ip, port);
     }
 
+    public void put(String text) {
+        Message message = new Message(text, null);
+        messageBuffer.put(message);
+    }
+
+    public void addMessageListener(Callback callback) {
+        callbacks.add(callback);
+    }
+
     private class Connection {
-        private String ip;
-        private int port;
         private Sender sender;
         private Receiver receiver;
 
         public Connection(String ip, int port) {
-            this.ip = ip;
-            this.port = port;
             try {
                 Socket socket = new Socket(ip, port);
                 sender = new Sender(socket.getOutputStream());
@@ -41,7 +50,6 @@ public class ChatClient {
         public Sender(OutputStream outputStream) {
             try {
                 oos = new ObjectOutputStream(outputStream);
-                scan = new Scanner(System.in);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -49,14 +57,11 @@ public class ChatClient {
 
         public void run() {
             while (true) {
-                System.out.println("TYPE TO SEND:");
-                System.out.println("Hej");
-                String input = scan.nextLine();
-                Message message = new Message(input, null);
                 try {
+                    Message message = messageBuffer.get();
                     oos.writeObject(message);
                     oos.flush();
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
@@ -80,7 +85,13 @@ public class ChatClient {
                 try {
                     Message message = (Message) ois.readObject();
                     history.add(message);
-                    System.out.println(message);
+                    for (Callback callback : callbacks) {
+                        String[] infoStrings = new String[history.size()];
+                        for (int i = 0; i < infoStrings.length; i++) {
+                            infoStrings[i] = history.get(i).toString();
+                        }
+                        callback.updateListView(infoStrings);
+                    }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
