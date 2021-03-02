@@ -1,3 +1,5 @@
+package clientserver;
+
 import java.util.LinkedList;
 
 public class Buffer<T> {

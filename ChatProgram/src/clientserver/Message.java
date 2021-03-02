@@ -1,3 +1,5 @@
+package clientserver;
+
 import javax.swing.*;
 import java.io.Serializable;
 
