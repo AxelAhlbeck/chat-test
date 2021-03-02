@@ -48,6 +48,7 @@ public class ChatClient {
         public void run() {
             while (true) {
                 System.out.println("TYPE TO SEND:");
+                System.out.println("Hej");
                 String input = scan.nextLine();
                 Message message = new Message(input, null);
                 try {
