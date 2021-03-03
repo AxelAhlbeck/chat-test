@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ChatClient {
+    private String username;
     private ArrayList<Message> history;
     private Buffer<Message> messageBuffer;
     private ArrayList<Callback> callbacks;
 
-    public ChatClient(String ip, int port) {
+    public ChatClient(String username, String ip, int port) {
+        this.username = username;
         history = new ArrayList<>();
         messageBuffer = new Buffer<>();
         callbacks = new ArrayList<>();
@@ -18,7 +20,7 @@ public class ChatClient {
     }
 
     public void put(String text) {
-        Message message = new Message(text, null);
+        Message message = new Message(username, text, null);
         messageBuffer.put(message);
     }
 
@@ -84,6 +86,9 @@ public class ChatClient {
             while (true) {
                 try {
                     Message message = (Message) ois.readObject();
+                    if (message.getUsername().equals(username)) {
+                        message.setUsername("You");
+                    }
                     history.add(message);
                     for (Callback callback : callbacks) {
                         String[] infoStrings = new String[history.size()];
@@ -100,6 +105,6 @@ public class ChatClient {
     }
 
     public static void main(String[] args) {
-        ChatClient client = new ChatClient("127.0.0.1", 2341);
+        ChatClient client = new ChatClient("Axel","127.0.0.1", 2341);
     }
 }
