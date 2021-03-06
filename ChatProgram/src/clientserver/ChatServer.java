@@ -5,16 +5,19 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class ChatServer implements Runnable {
     private MessageManager messageManager;
     private int port;
+    private ArrayList<User> users;
     Thread server = new Thread(this);
 
     public ChatServer(MessageManager messageManager, int port) {
         this.messageManager = messageManager;
         this.port = port;
+        users = new ArrayList<>();
         server.start();
     }
 
@@ -23,11 +26,16 @@ public class ChatServer implements Runnable {
         Socket socket;
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
+                System.out.println("Waiting for connection...");
                 socket = serverSocket.accept();
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                System.out.println("Connected, waiting for user info");
+                Message newUser = (Message) ois.readObject();
+                users.add(newUser.getSender());
                 new Connection(socket);
             }
 
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

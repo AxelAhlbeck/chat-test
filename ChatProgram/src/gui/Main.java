@@ -10,7 +10,7 @@ public class Main {
         manager.start();
 
         ChatClient client1 = new ChatClient("Axel", "127.0.0.1", 2341);
-        ChatClient client2 = new ChatClient("Ahlbeck", "127.0.0.1", 2341);
+        ChatClient client2 = new ChatClient("Linn", "127.0.0.1", 2341);
         new GUI(client1);
         new GUI(client2);
     }

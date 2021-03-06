@@ -3,30 +3,49 @@ package clientserver;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
+
 
 public class ChatClient {
-    private String username;
+    private User user;
     private ArrayList<Message> history;
     private Buffer<Message> messageBuffer;
     private ArrayList<Callback> callbacks;
+    private Connection connection;
 
-    public ChatClient(String username, String ip, int port) {
-        this.username = username;
+    public ChatClient(String user, String ip, int port) {
+        this.user = new User(user);
         history = new ArrayList<>();
         messageBuffer = new Buffer<>();
         callbacks = new ArrayList<>();
-        new Connection(ip, port);
+    }
+
+    public ChatClient() {
+        this("","",-1);
     }
 
     public void put(String text) {
-        Message message = new Message(username, text, null);
+        Message message = new Message(user, null, text, null);
         messageBuffer.put(message);
     }
 
     public void addMessageListener(Callback callback) {
         callbacks.add(callback);
     }
+
+    public void connect(String ip, int port) {
+        connection = new Connection(ip, port);
+    }
+
+    public void send(String text) {
+        Message message = new Message(user, null, text, null);
+        messageBuffer.put(message);
+    }
+
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
     private class Connection {
         private Sender sender;
@@ -35,7 +54,13 @@ public class ChatClient {
         public Connection(String ip, int port) {
             try {
                 Socket socket = new Socket(ip, port);
-                sender = new Sender(socket.getOutputStream());
+                System.out.println("Connected");
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                Message userMessage = new Message(user, null, "", null);
+                System.out.println("Sending user");
+                oos.writeObject(userMessage);
+                oos.flush();
+                sender = new Sender(oos);
                 receiver = new Receiver(socket.getInputStream());
                 sender.start();
                 receiver.start();
@@ -47,14 +72,9 @@ public class ChatClient {
 
     private class Sender extends Thread {
         private ObjectOutputStream oos;
-        private Scanner scan;
 
-        public Sender(OutputStream outputStream) {
-            try {
-                oos = new ObjectOutputStream(outputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public Sender(ObjectOutputStream outputStream) {
+            oos = outputStream;
         }
 
         public void run() {
@@ -86,7 +106,7 @@ public class ChatClient {
             while (true) {
                 try {
                     Message message = (Message) ois.readObject();
-                    if (message.getUsername().equals(username)) {
+                    if (message.getSender().getName().equals(user.getName())) {
                         message.setUsername("You");
                     }
                     history.add(message);

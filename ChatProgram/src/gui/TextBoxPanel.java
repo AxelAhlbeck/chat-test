@@ -30,7 +30,7 @@ public class TextBoxPanel extends JPanel implements ActionListener {
         if (e.getSource() == sendButton) {
             String text = textField.getText();
             if(text != null && !text.isEmpty()) {
-                client.put(text);
+                client.send(text);
             }
         }
     }

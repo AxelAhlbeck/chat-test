@@ -4,17 +4,22 @@ import javax.swing.*;
 import java.io.Serializable;
 
 public class Message implements Serializable {
+    private User sender;
+    private User[] recipients;
     private String text;
     private Icon icon;
-    private String username;
 
-    public Message(String username, String text, Icon icon){
+
+    public Message(User sender, User[] recipients, String text, Icon icon){
+        this.sender = sender;
+        this.recipients = recipients;
         this.text=text;
         this.icon=icon;
-        this.username = username;
     }
 
-    public String getUsername() { return username; }
+    public User getSender() { return sender; }
+
+    public User[] getRecipients() { return recipients; }
 
     public String getText() {
         return text;
@@ -25,10 +30,11 @@ public class Message implements Serializable {
     }
 
     public String toString() {
-        return String.format("%s: %s", username, text);
+        return String.format("%s: %s", sender.getName(), text);
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        sender.setName(username);
     }
+
 }
