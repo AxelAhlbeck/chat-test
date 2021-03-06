@@ -51,7 +51,7 @@ public class GUI extends JFrame {
         new GUI();
     }
 
-    public void updateListView(Message[] messages) {
+    public <T> void updateListView(T[] messages) {
         chatPanel.updateListView(messages);
     }
 }

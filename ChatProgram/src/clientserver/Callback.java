@@ -3,5 +3,5 @@ package clientserver;
 import java.util.List;
 
 public interface Callback {
-    void updateListView(Message[] messages);
+    <T> void updateListView(T[] messages);
 }

@@ -36,7 +36,7 @@ public class ClientController implements Callback {
     }
 
     @Override
-    public void updateListView(Message[] messages) {
+    public <T> void updateListView(T[] messages) {
         gui.updateListView(messages);
     }
 }
