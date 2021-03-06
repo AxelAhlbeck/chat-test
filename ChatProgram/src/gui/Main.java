@@ -1,6 +1,7 @@
 package gui;
 
 import clientserver.*;
+import controller.ClientController;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,9 +10,11 @@ public class Main {
         ChatServer server = new ChatServer(manager, 2341);
         manager.start();
 
-        ChatClient client1 = new ChatClient("Axel", "127.0.0.1", 2341);
-        ChatClient client2 = new ChatClient("Linn", "127.0.0.1", 2341);
-        new GUI(client1);
-        new GUI(client2);
+        int NUM_CLIENTS = 2;
+
+        for (int i = 0; i < NUM_CLIENTS; i++) {
+            new LogInWindow(new ClientController());
+        }
+
     }
 }
