@@ -32,11 +32,21 @@ public class ChatServer implements Runnable {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 users.add(newUser.getSender());
                 new Connection(ois, oos);
+                sendUsers(users);
             }
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendUsers(ArrayList<User> users) {
+        User[] onlineUsers = new User[users.size()];
+        for (int i = 0; i < users.size(); i++) {
+            onlineUsers[i] = users.get(i);
+        }
+        Message updateOnline = new Message(new User("SERVER"), onlineUsers, "updateOnline", null);
+        messageManager.put(updateOnline);
     }
 
     private class Connection {

@@ -7,7 +7,6 @@ import clientserver.User;
 import gui.GUI;
 
 import javax.swing.*;
-import java.util.List;
 
 
 public class ClientController implements Callback {
@@ -24,19 +23,23 @@ public class ClientController implements Callback {
     }
 
     public void connect(String username, ImageIcon profilePic, String ip, int port) {
+        gui = new GUI(this);
         User user = new User(username, profilePic);
         client.setUser(user);
         client.connect(ip, port);
-        gui = new GUI(this);
     }
-
 
     public void send(String text) {
         client.send(text);
     }
 
     @Override
-    public <T> void updateListView(T[] messages) {
+    public void updateListView(Message[] messages) {
         gui.updateListView(messages);
+    }
+
+    @Override
+    public void updateListView(User[] users) {
+        gui.updateListView(users);
     }
 }

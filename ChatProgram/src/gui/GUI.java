@@ -1,6 +1,7 @@
 package gui;
 
 import clientserver.Message;
+import clientserver.User;
 import controller.ClientController;
 
 import javax.swing.*;
@@ -51,7 +52,11 @@ public class GUI extends JFrame {
         new GUI();
     }
 
-    public <T> void updateListView(T[] messages) {
+    public void updateListView(Message[] messages) {
         chatPanel.updateListView(messages);
+    }
+
+    public void updateListView(User[] users) {
+        onlinePanel.updateListView(users);
     }
 }

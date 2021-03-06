@@ -1,6 +1,5 @@
 package gui;
 
-import clientserver.Message;
 import clientserver.User;
 
 import javax.swing.*;

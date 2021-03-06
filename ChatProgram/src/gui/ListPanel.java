@@ -1,6 +1,7 @@
 package gui;
 
 import clientserver.Message;
+import clientserver.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,11 +29,15 @@ public class ListPanel extends JPanel {
         list.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
     }
 
-    public <T> void updateListView(T[] messages) {
+    public void updateListView(Message[] messages) {
         list.setListData(messages);
     }
 
     public void setListRenderer(ListCellRenderer renderer) {
         list.setCellRenderer(renderer);
+    }
+
+    public void updateListView(User[] users) {
+        list.setListData(users);
     }
 }

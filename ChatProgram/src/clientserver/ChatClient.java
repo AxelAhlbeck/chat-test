@@ -99,17 +99,30 @@ public class ChatClient {
                     if (message.getSender().getName().equals(user.getName())) {
                         message.setUsername("You");
                     }
-                    history.add(message);
-                    for (Callback callback : callbacks) {
-                        Message[] messages = new Message[history.size()];
-                        for (int i = 0; i < messages.length; i++) {
-                            messages[i] = history.get(i);
+                    if (message.getSender().getName().equals("SERVER")) {
+                        handleServerMessage(message);
+                    } else {
+                        history.add(message);
+                        for (Callback callback : callbacks) {
+                            Message[] messages = new Message[history.size()];
+                            for (int i = 0; i < messages.length; i++) {
+                                messages[i] = history.get(i);
+                            }
+                            callback.updateListView(messages);
                         }
-                        callback.updateListView(messages);
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        private void handleServerMessage(Message message) {
+            switch (message.getText()) {
+                case "updateOnline":
+                    for (Callback callback : callbacks) {
+                        callback.updateListView(message.getRecipients());
+                    }
             }
         }
     }
