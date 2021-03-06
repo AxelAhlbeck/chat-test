@@ -1,33 +1,32 @@
 package gui;
 
-import clientserver.Callback;
-import clientserver.ChatClient;
+import clientserver.Message;
+import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GUI extends JFrame implements Callback {
+public class GUI extends JFrame {
     TextBoxPanel textBoxPanel;
     ChatPanel chatPanel;
 
-    public GUI(ChatClient client, int width, int height) {
+    public GUI(ClientController controller, int width, int height) {
 
         setPreferredSize(new Dimension(width, height));
 
-        textBoxPanel = new TextBoxPanel(client, width, height/5);
+        textBoxPanel = new TextBoxPanel(controller, width, height/5);
         add(textBoxPanel, BorderLayout.SOUTH);
 
-        chatPanel = new ChatPanel(width, 4 * height/5);
-        add(chatPanel, BorderLayout.NORTH);
+        chatPanel = new ChatPanel(2 * width/3, 4 * height/5);
+        add(chatPanel, BorderLayout.WEST);
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        client.addMessageListener(this);
     }
 
-    public GUI(ChatClient client) {
-        this(client, 500, 500);
+    public GUI(ClientController controller) {
+        this(controller, 500, 500);
     }
 
     public GUI() {
@@ -38,8 +37,7 @@ public class GUI extends JFrame implements Callback {
         new GUI();
     }
 
-    @Override
-    public void updateListView(String[] infoStrings) {
-        chatPanel.updateListView(infoStrings);
+    public void updateListView(Message[] messages) {
+        chatPanel.updateListView(messages);
     }
 }

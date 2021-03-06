@@ -1,5 +1,7 @@
 package clientserver;
 
+import java.util.List;
+
 public interface Callback {
-    void updateListView(String[] infoStrings);
+    void updateListView(Message[] messages);
 }

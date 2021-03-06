@@ -59,8 +59,8 @@ public class ChatServer implements Runnable {
         private ObjectOutputStream oos;
         private Buffer<Message> messageBuffer;
 
-        public Sender(ObjectOutputStream outputStream, Buffer<Message> messageBuffer) {
-            this.oos = outputStream;
+        public Sender(ObjectOutputStream oos, Buffer<Message> messageBuffer) {
+            this.oos = oos;
             this.messageBuffer = messageBuffer;
             messageManager.addPropertyChangeListener(this);
         }
@@ -91,8 +91,8 @@ public class ChatServer implements Runnable {
         private ObjectInputStream ois;
         private Buffer<Message> messageBuffer;
 
-        public Receiver(ObjectInputStream inputStream, Buffer<Message> messageBuffer) {
-            ois = inputStream;
+        public Receiver(ObjectInputStream ois, Buffer<Message> messageBuffer) {
+            this.ois = ois;
             this.messageBuffer = messageBuffer;
         }
 

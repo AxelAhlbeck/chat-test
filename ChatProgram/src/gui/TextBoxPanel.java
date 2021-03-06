@@ -1,6 +1,6 @@
 package gui;
 
-import clientserver.ChatClient;
+import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,10 +10,10 @@ import java.awt.event.ActionListener;
 public class TextBoxPanel extends JPanel implements ActionListener {
     private JTextField textField;
     private JButton sendButton;
-    private ChatClient client;
+    private ClientController controller;
 
-    public TextBoxPanel(ChatClient client, int width, int height) {
-        this.client = client;
+    public TextBoxPanel(ClientController controller, int width, int height) {
+        this.controller = controller;
         setPreferredSize(new Dimension(width, height));
         setBackground(Color.BLACK);
         textField = new JTextField();
@@ -30,7 +30,7 @@ public class TextBoxPanel extends JPanel implements ActionListener {
         if (e.getSource() == sendButton) {
             String text = textField.getText();
             if(text != null && !text.isEmpty()) {
-                client.send(text);
+                controller.send(text);
             }
         }
     }

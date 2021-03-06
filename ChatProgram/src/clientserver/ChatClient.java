@@ -23,11 +23,6 @@ public class ChatClient {
         this("","",-1);
     }
 
-    public void put(String text) {
-        Message message = new Message(user, null, text, null);
-        messageBuffer.put(message);
-    }
-
     public void addMessageListener(Callback callback) {
         callbacks.add(callback);
     }
@@ -37,7 +32,7 @@ public class ChatClient {
     }
 
     public void send(String text) {
-        Message message = new Message(user, null, text, null);
+        Message message = new Message(user, null, text, user.getProfilePic());
         messageBuffer.put(message);
     }
 
@@ -108,11 +103,11 @@ public class ChatClient {
                     }
                     history.add(message);
                     for (Callback callback : callbacks) {
-                        String[] infoStrings = new String[history.size()];
-                        for (int i = 0; i < infoStrings.length; i++) {
-                            infoStrings[i] = history.get(i).toString();
+                        Message[] messages = new Message[history.size()];
+                        for (int i = 0; i < messages.length; i++) {
+                            messages[i] = history.get(i);
                         }
-                        callback.updateListView(infoStrings);
+                        callback.updateListView(messages);
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
