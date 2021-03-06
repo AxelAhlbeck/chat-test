@@ -60,8 +60,9 @@ public class ChatClient {
                 System.out.println("Sending user");
                 oos.writeObject(userMessage);
                 oos.flush();
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 sender = new Sender(oos);
-                receiver = new Receiver(socket.getInputStream());
+                receiver = new Receiver(ois);
                 sender.start();
                 receiver.start();
             } catch (IOException e) {
@@ -94,12 +95,8 @@ public class ChatClient {
     private class Receiver extends Thread {
         private ObjectInputStream ois;
 
-        public Receiver(InputStream inputStream) {
-            try {
-                ois = new ObjectInputStream(inputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public Receiver(ObjectInputStream inputStream) {
+            ois = inputStream;
         }
 
         public void run() {

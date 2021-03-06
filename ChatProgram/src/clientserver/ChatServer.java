@@ -31,8 +31,9 @@ public class ChatServer implements Runnable {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 System.out.println("Connected, waiting for user info");
                 Message newUser = (Message) ois.readObject();
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 users.add(newUser.getSender());
-                new Connection(socket);
+                new Connection(ois, oos);
             }
 
         } catch (IOException | ClassNotFoundException e) {
@@ -45,16 +46,12 @@ public class ChatServer implements Runnable {
         private Sender sender;
         private Receiver receiver;
 
-        public Connection(Socket socket) {
-            try {
-                messageBuffer = new Buffer<>();
-                sender = new Sender(socket.getOutputStream(), messageBuffer);
-                receiver = new Receiver(socket.getInputStream(), messageBuffer);
-                sender.start();
-                receiver.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public Connection(ObjectInputStream ois, ObjectOutputStream oos) {
+            messageBuffer = new Buffer<>();
+            sender = new Sender(oos, messageBuffer);
+            receiver = new Receiver(ois, messageBuffer);
+            sender.start();
+            receiver.start();
         }
     }
 
@@ -62,14 +59,10 @@ public class ChatServer implements Runnable {
         private ObjectOutputStream oos;
         private Buffer<Message> messageBuffer;
 
-        public Sender(OutputStream outputStream, Buffer<Message> messageBuffer) {
-            try {
-                this.oos = new ObjectOutputStream(outputStream);
-                this.messageBuffer = messageBuffer;
-                messageManager.addPropertyChangeListener(this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public Sender(ObjectOutputStream outputStream, Buffer<Message> messageBuffer) {
+            this.oos = outputStream;
+            this.messageBuffer = messageBuffer;
+            messageManager.addPropertyChangeListener(this);
         }
 
         @Override
@@ -98,13 +91,9 @@ public class ChatServer implements Runnable {
         private ObjectInputStream ois;
         private Buffer<Message> messageBuffer;
 
-        public Receiver(InputStream inputStream, Buffer<Message> messageBuffer) {
-            try {
-                ois = new ObjectInputStream(inputStream);
-                this.messageBuffer = messageBuffer;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        public Receiver(ObjectInputStream inputStream, Buffer<Message> messageBuffer) {
+            ois = inputStream;
+            this.messageBuffer = messageBuffer;
         }
 
         public void run() {
