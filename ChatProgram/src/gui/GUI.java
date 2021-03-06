@@ -8,17 +8,31 @@ import java.awt.*;
 
 public class GUI extends JFrame {
     TextBoxPanel textBoxPanel;
-    ChatPanel chatPanel;
+    ListPanel chatPanel;
+    ListPanel contactsPanel;
+    ListPanel onlinePanel;
 
     public GUI(ClientController controller, int width, int height) {
 
         setPreferredSize(new Dimension(width, height));
 
-        textBoxPanel = new TextBoxPanel(controller, width, height/5);
+        textBoxPanel = new TextBoxPanel(controller, width, height / 5);
         add(textBoxPanel, BorderLayout.SOUTH);
 
-        chatPanel = new ChatPanel(2 * width/3, 4 * height/5);
-        add(chatPanel, BorderLayout.WEST);
+        contactsPanel = new ListPanel(width / 3, 4 * height / 5, "Contacts:");
+        contactsPanel.setListRenderer(new UserRenderer());
+        add(contactsPanel, BorderLayout.WEST);
+
+        chatPanel = new ListPanel( width / 3, 4 * height / 5, "Chatroom:");
+        chatPanel.setListRenderer(new MessageRenderer());
+        add(chatPanel, BorderLayout.CENTER);
+
+        onlinePanel = new ListPanel(width / 3, 4 * height / 5, "Online Users:");
+        onlinePanel.setListRenderer(new UserRenderer());
+        add(onlinePanel, BorderLayout.EAST);
+
+
+
 
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,7 +40,7 @@ public class GUI extends JFrame {
     }
 
     public GUI(ClientController controller) {
-        this(controller, 500, 500);
+        this(controller, 1000, 500);
     }
 
     public GUI() {

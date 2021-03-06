@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 
 public class LogInWindow implements ActionListener {
@@ -21,7 +20,7 @@ public class LogInWindow implements ActionListener {
     private JButton imageButton;
     private ClientController controller;
     private JFileChooser chooser;
-    private ImageIcon imageFile;
+    private ImageIcon imageIcon;
 
 
     public LogInWindow(ClientController controller) {
@@ -73,23 +72,23 @@ public class LogInWindow implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == connectButton){
-            if (imageFile == null) {
+            if (imageIcon == null) {
                 JOptionPane.showMessageDialog(null, "No profile picture selected");
             } else {
                 String user = userText.getText();
                 String ip = ipText.getText();
                 int port = Integer.parseInt(portText.getText());
-                controller.connect(user, imageFile, ip, port);
+                controller.connect(user, imageIcon, ip, port);
                 frame.setVisible(false);
             }
         }
         if (e.getSource() == imageButton) {
             int returnVal = chooser.showOpenDialog(frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                imageFile = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
-                Image image = imageFile.getImage();
+                imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
+                Image image = imageIcon.getImage();
                 Image newimage = image.getScaledInstance(25, 25,  Image.SCALE_SMOOTH);
-                imageFile = new ImageIcon(newimage);
+                imageIcon = new ImageIcon(newimage);
             }
 
 

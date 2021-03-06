@@ -49,10 +49,8 @@ public class ChatClient {
         public Connection(String ip, int port) {
             try {
                 Socket socket = new Socket(ip, port);
-                System.out.println("Connected");
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                Message userMessage = new Message(user, null, "", null);
-                System.out.println("Sending user");
+                Message userMessage = new Message(user, null, "", user.getProfilePic());
                 oos.writeObject(userMessage);
                 oos.flush();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());

@@ -26,10 +26,8 @@ public class ChatServer implements Runnable {
         Socket socket;
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
-                System.out.println("Waiting for connection...");
                 socket = serverSocket.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                System.out.println("Connected, waiting for user info");
                 Message newUser = (Message) ois.readObject();
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 users.add(newUser.getSender());
