@@ -42,4 +42,15 @@ public class ClientController implements Callback {
     public void updateListView(User[] users) {
         gui.updateListView(users);
     }
+
+    public void addContacts() {
+        User user = gui.getSelectedOnlineUser();
+        Object[] contacts = gui.getContacts();
+        User[] newContacts = new User[contacts.length+1];
+        for (int i = 0; i < contacts.length; i++) {
+            newContacts[i] = (User) contacts[i];
+        }
+        newContacts[newContacts.length-1] = user;
+        gui.updateContacts(newContacts);
+    }
 }

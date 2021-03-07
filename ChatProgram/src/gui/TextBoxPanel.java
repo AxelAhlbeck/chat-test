@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 public class TextBoxPanel extends JPanel implements ActionListener {
     private JTextField textField;
     private JButton sendButton;
+    private JButton addContactButton;
     private ClientController controller;
 
     public TextBoxPanel(ClientController controller, int width, int height) {
@@ -23,6 +24,10 @@ public class TextBoxPanel extends JPanel implements ActionListener {
         sendButton = new JButton("Send");
         sendButton.addActionListener(this);
         add(sendButton, BorderLayout.EAST);
+
+        addContactButton = new JButton("Add to Contacts");
+        addContactButton.addActionListener(this);
+        add(addContactButton, BorderLayout.EAST);
     }
 
     @Override
@@ -32,6 +37,9 @@ public class TextBoxPanel extends JPanel implements ActionListener {
             if(text != null && !text.isEmpty()) {
                 controller.send(text);
             }
+        }
+        if (e.getSource() == addContactButton) {
+            controller.addContacts();
         }
     }
 }

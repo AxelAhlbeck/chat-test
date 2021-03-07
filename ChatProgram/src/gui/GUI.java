@@ -59,4 +59,16 @@ public class GUI extends JFrame {
     public void updateListView(User[] users) {
         onlinePanel.updateListView(users);
     }
+
+    public User getSelectedOnlineUser() {
+        return (User) onlinePanel.getSelectedElement();
+    }
+
+    public Object[] getContacts() {
+        return contactsPanel.getListElements();
+    }
+
+    public void updateContacts(User[] newContacts) {
+        contactsPanel.updateListView(newContacts);
+    }
 }
