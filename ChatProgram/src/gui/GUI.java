@@ -6,6 +6,8 @@ import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GUI extends JFrame {
     TextBoxPanel textBoxPanel;
@@ -70,5 +72,21 @@ public class GUI extends JFrame {
 
     public void updateContacts(User[] newContacts) {
         contactsPanel.updateListView(newContacts);
+    }
+
+    public ArrayList<User> getSelectedReceivers() {
+        List onlineReceivers = onlinePanel.getSelectedElements();
+        List contactReceivers = contactsPanel.getSelectedElements();
+        ArrayList<User> list = new ArrayList<>();
+        for (Object user : onlineReceivers) {
+            list.add((User) user);
+        }
+        for (Object user : contactReceivers) {
+            User u = (User) user;
+            if (!list.contains(u)) {
+                list.add(u);
+            }
+        }
+        return list;
     }
 }

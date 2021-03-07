@@ -2,15 +2,16 @@ package clientserver;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Message implements Serializable {
     private User sender;
-    private User[] recipients;
+    private ArrayList<User> recipients;
     private String text;
     private Icon icon;
 
 
-    public Message(User sender, User[] recipients, String text, Icon icon){
+    public Message(User sender, ArrayList<User> recipients, String text, Icon icon){
         this.sender = sender;
         this.recipients = recipients;
         this.text=text;
@@ -19,7 +20,7 @@ public class Message implements Serializable {
 
     public User getSender() { return sender; }
 
-    public User[] getRecipients() { return recipients; }
+    public ArrayList<User> getRecipients() { return recipients; }
 
     public String getText() {
         return text;

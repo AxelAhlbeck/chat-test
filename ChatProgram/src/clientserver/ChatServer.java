@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 
+
 public class ChatServer implements Runnable {
     private MessageManager messageManager;
     private int port;
@@ -30,10 +31,10 @@ public class ChatServer implements Runnable {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Message userMessage = (Message) ois.readObject();
                 User newUser = userMessage.getSender();
+                addUser(newUser);
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                users.add(newUser);
                 new Connection(newUser, ois, oos);
-                sendUsers(users);
+                sendUsers();
             }
 
         } catch (IOException | ClassNotFoundException e) {
@@ -41,24 +42,27 @@ public class ChatServer implements Runnable {
         }
     }
 
-    private void sendUsers(ArrayList<User> users) {
-        User[] onlineUsers = new User[users.size()];
-        for (int i = 0; i < users.size(); i++) {
-            onlineUsers[i] = users.get(i);
-        }
-        Message updateOnline = new Message(new User("SERVER"), onlineUsers, "updateOnline", null);
+    private synchronized void addUser(User newUser) {
+        users.add(newUser);
+    }
+
+    private void sendUsers() {
+        Message updateOnline = new Message(new User("SERVER"), getUsers(), "updateOnline", null);
         messageManager.put(updateOnline);
+    }
+
+    private synchronized ArrayList<User> getUsers() {
+        return (ArrayList<User>) users.clone();
     }
 
     private class Connection {
         private Buffer<Message> messageBuffer;
         private Sender sender;
         private Receiver receiver;
-        User connectedUser;
 
         public Connection(User connectedUser, ObjectInputStream ois, ObjectOutputStream oos) {
             messageBuffer = new Buffer<>();
-            sender = new Sender(oos, messageBuffer);
+            sender = new Sender(connectedUser, oos, messageBuffer);
             receiver = new Receiver(connectedUser, ois);
             sender.start();
             receiver.start();
@@ -68,8 +72,10 @@ public class ChatServer implements Runnable {
     private class Sender extends Thread implements PropertyChangeListener {
         private ObjectOutputStream oos;
         private Buffer<Message> messageBuffer;
+        private User connectedUser;
 
-        public Sender(ObjectOutputStream oos, Buffer<Message> messageBuffer) {
+        public Sender(User connectedUser, ObjectOutputStream oos, Buffer<Message> messageBuffer) {
+            this.connectedUser = connectedUser;
             this.oos = oos;
             this.messageBuffer = messageBuffer;
             messageManager.addPropertyChangeListener(this);
@@ -120,9 +126,14 @@ public class ChatServer implements Runnable {
                     break;
                 }
             }
-            users.remove(connectedUser);
-            sendUsers(users);
+            removeUser(connectedUser);
+            System.out.println("ABABA");
+            sendUsers();
         }
+    }
+
+    private synchronized void removeUser(User connectedUser) {
+        users.remove(connectedUser);
     }
 
 

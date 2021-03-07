@@ -41,6 +41,14 @@ public class ChatClient {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void send(Message message) {
+        messageBuffer.put(message);
+    }
+
 
     private class Connection {
         private Sender sender;
@@ -96,9 +104,6 @@ public class ChatClient {
             while (true) {
                 try {
                     Message message = (Message) ois.readObject();
-                    if (message.getSender().getName().equals(user.getName())) {
-                        message.setUsername("You");
-                    }
                     if (message.getSender().getName().equals("SERVER")) {
                         handleServerMessage(message);
                     } else {
@@ -121,7 +126,12 @@ public class ChatClient {
             switch (message.getText()) {
                 case "updateOnline":
                     for (Callback callback : callbacks) {
-                        callback.updateListView(message.getRecipients());
+                        ArrayList<User> list = message.getRecipients();
+                        User[] newUsers = new User[list.size()];
+                        for (int i = 0; i < list.size(); i++) {
+                            newUsers[i] = list.get(i);
+                        }
+                        callback.updateListView(newUsers);
                     }
             }
         }

@@ -5,6 +5,7 @@ import clientserver.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 
 public class ListPanel extends JPanel {
@@ -51,5 +52,9 @@ public class ListPanel extends JPanel {
 
     public Object[] getListElements() {
         return listElements;
+    }
+
+    public List getSelectedElements() {
+        return list.getSelectedValuesList();
     }
 }
