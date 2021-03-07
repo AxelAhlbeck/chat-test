@@ -3,7 +3,7 @@ package clientserver;
 import javax.swing.*;
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class User implements Serializable, Comparable {
     private String name;
     private Icon profilePic;
 
@@ -30,5 +30,15 @@ public class User implements Serializable {
 
     public Icon getProfilePic() {
         return profilePic;
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof User) {
+            User other = (User) o;
+            return name.compareTo(other.getName());
+        }
+        return 0;
     }
 }

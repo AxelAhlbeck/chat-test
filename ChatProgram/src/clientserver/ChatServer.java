@@ -28,10 +28,11 @@ public class ChatServer implements Runnable {
             while (true) {
                 socket = serverSocket.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                Message newUser = (Message) ois.readObject();
+                Message userMessage = (Message) ois.readObject();
+                User newUser = userMessage.getSender();
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                users.add(newUser.getSender());
-                new Connection(ois, oos);
+                users.add(newUser);
+                new Connection(newUser, ois, oos);
                 sendUsers(users);
             }
 
@@ -53,11 +54,12 @@ public class ChatServer implements Runnable {
         private Buffer<Message> messageBuffer;
         private Sender sender;
         private Receiver receiver;
+        User connectedUser;
 
-        public Connection(ObjectInputStream ois, ObjectOutputStream oos) {
+        public Connection(User connectedUser, ObjectInputStream ois, ObjectOutputStream oos) {
             messageBuffer = new Buffer<>();
             sender = new Sender(oos, messageBuffer);
-            receiver = new Receiver(ois, messageBuffer);
+            receiver = new Receiver(connectedUser, ois);
             sender.start();
             receiver.start();
         }
@@ -75,14 +77,15 @@ public class ChatServer implements Runnable {
 
         @Override
         public void run() {
-            try {
-                while (true) {
+            while (true) {
+                try {
                     Message message = messageBuffer.get();
                     oos.writeObject(message);
                     oos.flush();
                 }
-            } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
+                catch (InterruptedException | IOException e) {
+                    break;
+                }
             }
         }
 
@@ -97,11 +100,11 @@ public class ChatServer implements Runnable {
 
     private class Receiver extends Thread {
         private ObjectInputStream ois;
-        private Buffer<Message> messageBuffer;
+        private User connectedUser;
 
-        public Receiver(ObjectInputStream ois, Buffer<Message> messageBuffer) {
+        public Receiver(User connectedUser, ObjectInputStream ois) {
+            this.connectedUser = connectedUser;
             this.ois = ois;
-            this.messageBuffer = messageBuffer;
         }
 
         public void run() {
@@ -114,9 +117,11 @@ public class ChatServer implements Runnable {
                         System.out.println("NULL");
                     }
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
+            users.remove(connectedUser);
+            sendUsers(users);
         }
     }
 

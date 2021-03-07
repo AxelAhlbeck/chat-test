@@ -78,7 +78,7 @@ public class ChatClient {
                     oos.writeObject(message);
                     oos.flush();
                 } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
 
             }
@@ -112,7 +112,7 @@ public class ChatClient {
                         }
                     }
                 } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         }
