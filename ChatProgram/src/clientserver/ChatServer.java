@@ -86,8 +86,13 @@ public class ChatServer implements Runnable {
             while (true) {
                 try {
                     Message message = messageBuffer.get();
-                    oos.writeObject(message);
-                    oos.flush();
+                    for (User u : message.getRecipients()) {
+                        if (u.getName().equals(connectedUser.getName())) {
+                            oos.writeObject(message);
+                            oos.flush();
+                            break;
+                        }
+                    }
                 }
                 catch (InterruptedException | IOException e) {
                     break;

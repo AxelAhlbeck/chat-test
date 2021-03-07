@@ -34,6 +34,7 @@ public class ClientController implements Callback {
 
     public void send(String text) {
         ArrayList<User> receivers = gui.getSelectedReceivers();
+        receivers.add(user);
         Message message = new Message(user, receivers, text, user.getProfilePic());
         client.send(message);
     }
