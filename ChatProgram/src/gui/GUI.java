@@ -47,7 +47,7 @@ public class GUI extends JFrame {
     }
 
     public GUI() {
-        this(null, 500, 500);
+        this(null, 1000, 500);
     }
 
     public static void main(String[] args) {
@@ -88,5 +88,9 @@ public class GUI extends JFrame {
             }
         }
         return list;
+    }
+
+    public void close() {
+        setVisible(false);
     }
 }

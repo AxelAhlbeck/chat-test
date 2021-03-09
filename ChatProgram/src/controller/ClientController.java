@@ -7,6 +7,7 @@ import clientserver.User;
 import gui.GUI;
 
 import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,30 @@ public class ClientController implements Callback {
     public void connect(String username, ImageIcon profilePic, String ip, int port) {
         gui = new GUI(this);
         user = new User(username, profilePic);
+        User[] contacts = readContactsFromFile();
+        gui.updateContacts(contacts);
         client.setUser(user);
         client.connect(ip, port);
+    }
+
+    private User[] readContactsFromFile() {
+        ArrayList<User> contactList = new ArrayList<>();
+        try {
+            String filename = System.getProperty("user.dir") + "/" + user.getName() + "_contacts.dat";
+            FileInputStream fis = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            contactList = (ArrayList) ois.readObject();
+            User[] contacts = new User[contactList.size()];
+            for (int i = 0; i < contacts.length; i++) {
+                contacts[i] = contactList.get(i);
+            }
+            ois.close();
+            fis.close();
+            return contacts;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void send(String text) {
@@ -58,5 +81,31 @@ public class ClientController implements Callback {
         }
         newContacts[newContacts.length-1] = user;
         gui.updateContacts(newContacts);
+    }
+
+    public void closeConnection() {
+        client.close();
+        saveContacts();
+        gui.close();
+        gui = null;
+    }
+
+    private void saveContacts() {
+        ArrayList<User> contactList = new ArrayList<>();
+        Object[] contacts = gui.getContacts();
+        for (Object o : contacts) {
+            contactList.add((User) o);
+        }
+        try {
+            String filename = System.getProperty("user.dir") + "/" + user.getName() + "_contacts.dat";
+            FileOutputStream fos = new FileOutputStream(filename);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(contactList);
+            oos.flush();
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

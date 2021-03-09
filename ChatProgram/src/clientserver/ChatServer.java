@@ -122,6 +122,11 @@ public class ChatServer implements Runnable {
             while (true) {
                 try {
                     Message message = (Message) ois.readObject();
+                    if (message.getSender().getName().equals("CLIENT")) {
+                        if (message.getText().equals("closeConnection")) {
+                            break;
+                        }
+                    }
                     if (message != null) {
                         messageManager.put(message);
                     } else {
@@ -132,7 +137,6 @@ public class ChatServer implements Runnable {
                 }
             }
             removeUser(connectedUser);
-            System.out.println("ABABA");
             sendUsers();
         }
     }

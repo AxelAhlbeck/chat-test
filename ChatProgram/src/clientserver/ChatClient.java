@@ -49,6 +49,11 @@ public class ChatClient {
         messageBuffer.put(message);
     }
 
+    public void close() {
+        Message closeMessage = new Message(new User("CLIENT"), null, "closeConnection", null);
+        messageBuffer.put(closeMessage);
+    }
+
 
     private class Connection {
         private Sender sender;
@@ -85,6 +90,11 @@ public class ChatClient {
                     Message message = messageBuffer.get();
                     oos.writeObject(message);
                     oos.flush();
+                    if (message.getSender().getName().equals("CLIENT")) {
+                        if (message.getText().equals("closeConnection")) {
+                            break;
+                        }
+                    }
                 } catch (IOException | InterruptedException e) {
                     break;
                 }
