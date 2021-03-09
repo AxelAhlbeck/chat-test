@@ -38,4 +38,7 @@ public class Message implements Serializable {
         sender.setName(username);
     }
 
+    public void setRecipients(ArrayList<User> recipients) {
+        this.recipients = recipients;
+    }
 }

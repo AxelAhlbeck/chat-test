@@ -6,19 +6,22 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 public class ChatServer implements Runnable {
     private MessageManager messageManager;
     private int port;
     private ArrayList<User> users;
+    private HashMap<User, LinkedList<Message>> unSentMessages;
     Thread server = new Thread(this);
 
     public ChatServer(MessageManager messageManager, int port) {
         this.messageManager = messageManager;
         this.port = port;
         users = new ArrayList<>();
+        unSentMessages = new HashMap<>();
         server.start();
     }
 
@@ -66,6 +69,14 @@ public class ChatServer implements Runnable {
             receiver = new Receiver(connectedUser, ois);
             sender.start();
             receiver.start();
+            if (unSentMessages.containsKey(connectedUser)) {
+                for (Message m : unSentMessages.get(connectedUser)) {
+                    ArrayList<User> newRecipient = new ArrayList<>();
+                    newRecipient.add(connectedUser);
+                    m.setRecipients(newRecipient);
+                    messageManager.put(m);
+                }
+            }
         }
     }
 
@@ -127,11 +138,31 @@ public class ChatServer implements Runnable {
                             break;
                         }
                     }
-                    if (message != null) {
-                        messageManager.put(message);
-                    } else {
-                        System.out.println("NULL");
+                    ArrayList<User> onlineUsers = getUsers();
+                    for (User u : message.getRecipients()) {
+                        boolean on = false;
+                        for (User online : onlineUsers) {
+                            if (u.equals(online)) {
+                                on = true;
+                            }
+                            if (!on) {
+                                LinkedList<Message> unsent;
+                                if (unSentMessages.containsKey(u)) {
+                                    unsent = unSentMessages.get(u);
+                                    if (unsent == null) {
+                                        unsent = new LinkedList<Message>();
+                                    }
+                                } else {
+                                    unsent = new LinkedList<>();
+                                }
+                                unsent.addLast(message);
+                                unSentMessages.put(u, unsent);
+                                System.out.println("UNSENT MESSAGE ADDED");
+                            }
+                        }
                     }
+                    messageManager.put(message);
+
                 } catch (IOException | ClassNotFoundException e) {
                     break;
                 }
@@ -140,6 +171,7 @@ public class ChatServer implements Runnable {
             sendUsers();
         }
     }
+
 
     private synchronized void removeUser(User connectedUser) {
         users.remove(connectedUser);

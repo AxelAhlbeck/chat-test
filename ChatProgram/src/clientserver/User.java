@@ -32,6 +32,17 @@ public class User implements Serializable, Comparable {
         return profilePic;
     }
 
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof User) {
+            return name.equals(((User) obj).getName());
+        }
+        return false;
+    }
+
 
     @Override
     public int compareTo(Object o) {

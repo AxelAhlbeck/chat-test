@@ -30,7 +30,9 @@ public class ClientController implements Callback {
         gui = new GUI(this);
         user = new User(username, profilePic);
         User[] contacts = readContactsFromFile();
-        gui.updateContacts(contacts);
+        if (contacts != null) {
+            gui.updateContacts(contacts);
+        }
         client.setUser(user);
         client.connect(ip, port);
     }
@@ -50,7 +52,7 @@ public class ClientController implements Callback {
             fis.close();
             return contacts;
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return null;
     }
