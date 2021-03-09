@@ -5,6 +5,9 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -133,6 +136,9 @@ public class ChatServer implements Runnable {
             while (true) {
                 try {
                     Message message = (Message) ois.readObject();
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+                    LocalDateTime now = LocalDateTime.now();
+                    message.setServerTimestamp(dtf.format(now));
                     if (message.getSender().getName().equals("CLIENT")) {
                         if (message.getText().equals("closeConnection")) {
                             break;

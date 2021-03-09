@@ -9,6 +9,8 @@ public class Message implements Serializable {
     private ArrayList<User> recipients;
     private String text;
     private Icon icon;
+    private String serverTimestamp;
+    private String receivedTimestamp;
 
 
     public Message(User sender, ArrayList<User> recipients, String text, Icon icon){
@@ -28,6 +30,22 @@ public class Message implements Serializable {
 
     public Icon getIcon() {
         return icon;
+    }
+
+    public void setServerTimestamp(String serverTimestamp) {
+        this.serverTimestamp = serverTimestamp;
+    }
+
+    public void setReceivedTimestamp(String receivedTimestamp) {
+        this.receivedTimestamp = receivedTimestamp;
+    }
+
+    public String getServerTimestamp() {
+        return serverTimestamp;
+    }
+
+    public String getReceivedTimestamp() {
+        return receivedTimestamp;
     }
 
     public String toString() {

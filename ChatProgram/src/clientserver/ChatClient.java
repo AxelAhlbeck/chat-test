@@ -2,6 +2,9 @@ package clientserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 
@@ -114,6 +117,9 @@ public class ChatClient {
             while (true) {
                 try {
                     Message message = (Message) ois.readObject();
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+                    LocalDateTime now = LocalDateTime.now();
+                    message.setReceivedTimestamp(dtf.format(now));
                     if (message.getSender().getName().equals("SERVER")) {
                         handleServerMessage(message);
                     } else {
