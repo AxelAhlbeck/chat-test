@@ -58,9 +58,13 @@ public class ClientController implements Callback {
     }
 
     public void send(String text) {
+        send(null, text);
+    }
+
+    public void send(ImageIcon imageIcon, String text) {
         ArrayList<User> receivers = gui.getSelectedReceivers();
         receivers.add(user);
-        Message message = new Message(user, receivers, text, user.getProfilePic());
+        Message message = new Message(user, receivers, text, imageIcon);
         client.send(message);
     }
 
@@ -110,4 +114,6 @@ public class ClientController implements Callback {
             e.printStackTrace();
         }
     }
+
+
 }
