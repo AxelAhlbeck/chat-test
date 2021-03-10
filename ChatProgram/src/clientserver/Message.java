@@ -52,6 +52,15 @@ public class Message implements Serializable {
         return String.format("%s: %s", sender.getName(), text);
     }
 
+    public String getLogInfo() {
+        String receivers = "[ ";
+        for (User u : recipients) {
+            receivers += u.getName() + " ";
+        }
+        receivers += "]";
+        return String.format("Message sent from: %s -- recipients: %s -- content: %s -- sent: %s", sender.getName(), receivers, text, serverTimestamp);
+    }
+
     public void setUsername(String username) {
         sender.setName(username);
     }

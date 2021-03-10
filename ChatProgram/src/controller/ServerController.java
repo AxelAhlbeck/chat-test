@@ -40,9 +40,9 @@ public class ServerController {
                 list.add(m);
             }
         }
-        Message[] messages = new Message[list.size()];
+        String[] messages = new String[list.size()];
         for (int i = 0; i < messages.length; i++) {
-            messages[i] = list.get(i);
+            messages[i] = list.get(i).getLogInfo();
         }
         gui.updateListView(messages);
     }
