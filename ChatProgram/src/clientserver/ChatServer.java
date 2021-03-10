@@ -18,6 +18,7 @@ public class ChatServer implements Runnable {
     private int port;
     private ArrayList<User> users;
     private HashMap<User, LinkedList<Message>> unSentMessages;
+    private LinkedList<Message> history;
     Thread server = new Thread(this);
 
     public ChatServer(MessageManager messageManager, int port) {
@@ -25,7 +26,12 @@ public class ChatServer implements Runnable {
         this.port = port;
         users = new ArrayList<>();
         unSentMessages = new HashMap<>();
-        server.start();
+        history = new LinkedList<>();
+        //server.start();
+    }
+
+    public synchronized void addMessageToHistory(Message message) {
+        history.addLast(message);
     }
 
     @Override
@@ -59,6 +65,15 @@ public class ChatServer implements Runnable {
 
     private synchronized ArrayList<User> getUsers() {
         return (ArrayList<User>) users.clone();
+    }
+
+    public void start() {
+        server.start();
+    }
+
+
+    public LinkedList<Message> getHistory() {
+        return history;
     }
 
     private class Connection {
@@ -144,6 +159,7 @@ public class ChatServer implements Runnable {
                             break;
                         }
                     }
+                    addMessageToHistory(message);
                     ArrayList<User> onlineUsers = getUsers();
                     for (User u : message.getRecipients()) {
                         boolean on = false;
